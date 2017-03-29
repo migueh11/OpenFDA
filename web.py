@@ -52,9 +52,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     <input type='submit' value='Company Search: Send to OpenFDA'></input>
                 </form>
 
-                <form method='get' action='gender'>
+                <form method='get' action='listGender'>
                     limit: <input type='text' name='limit'></input>
-                    <input type='submit' value='gender'></input>
+                    <input type='submit' value='listGender'></input>
                 </form>
 
             </body>
@@ -166,7 +166,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             html = self.drug_page(medicinalproduct)
             self.wfile.write(bytes(html,'utf8'))
 
-        elif 'gender' in self.path:
+        elif 'listGender' in self.path:
             limit=self.path.split('=')[1]
             events=self.get_event(limit)
             gender=self.get_gender(events)
