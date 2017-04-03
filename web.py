@@ -127,49 +127,64 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         </html>''' %(s)
         return html
 
+    def not_found(self):
+        html='''
+        <html>
+            <head>Error 404
+            </head>
+            <body>
+                <h1>Error 404 FIle not found</h1>
+            </body>
+        </html>'''
+        return html
+
     def do_GET(self):
-
-        self.send_response(200)
-
-        self.send_header('Content-type','text/html')
-        self.end_headers()
 
         if self.path == '/' :
             html = self.get_main_page()
-            self.wfile.write(bytes(html,'utf8'))
+            self.send_response(200)
 
         elif 'listDrugs' in self.path:
             limit=self.path.split('=')[1]
             events = self.get_event(limit)
             medicamentos = self.get_drug(events)
             html = self.drug_page(medicamentos)
-            self.wfile.write(bytes(html,'utf8'))
+            self.send_response(200)
 
         elif 'searchDrug' in self.path:
-            events = self.get_event()
+            drug=self.path.split('=')[1]
+            events = self.get_all_drugs(drug)
             com_num=self.get_com_num(events)
             html=self.drug_page(com_num)
-            self.wfile.write(bytes(html,'utf8'))
+            self.send_response(200)
 
         elif 'listCompanies' in self.path:
             limit=self.path.split('=')[1]
-            drug=self.path.split('=')[1]
             events = self.get_event(limit)
             com_num = self.get_com_num(events)
             html = self.drug_page(com_num)
-            self.wfile.write(bytes(html,'utf8'))
+            self.send_response(200)
 
         elif 'searchCompany' in self.path:
             com_num=self.path.split('=')[1]
             events = self.get_medicinalproduct(com_num)
             medicinalproduct= self.get_drug(events)
             html = self.drug_page(medicinalproduct)
-            self.wfile.write(bytes(html,'utf8'))
+            self.send_response(200)
 
         elif 'listGender' in self.path:
             limit=self.path.split('=')[1]
             events=self.get_event(limit)
             gender=self.get_gender(events)
             html = self.drug_page(gender)
-            self.wfile.write(bytes(html,'utf8'))
+            self.send_response(200)
+
+
+        else:
+            html=self.not_found()
+            self.send_response(404)
+
+        self.send_header('Content-type','text/html')
+        self.end_headers()
+        self.wfile.write(bytes(html,'utf8'))
         return
